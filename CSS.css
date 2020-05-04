@@ -1,0 +1,19 @@
+#gameWindow
+{
+    background: lightblue;
+    position: absolute;
+    left: 50%;
+    width: 600px;
+    height: 800px;
+    margin-left: -300px;
+}
+
+#bird
+{
+    background: white;
+    position: absolute;
+    left: 20%;
+    width: 60px;
+    height: 50px;
+    margin-top: 300px;
+}
