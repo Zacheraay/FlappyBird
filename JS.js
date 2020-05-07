@@ -11,7 +11,7 @@ var h;
 var start = false;
 
 
-function createBird ()
+function createBird ()  //creates bird, sets h to css height, starts idle function after bird is initialized
 {
     var bird = $("<bDiv></bDiv>");
     bird.attr('id', 'bird');
@@ -23,20 +23,12 @@ function createBird ()
 }
 
 
-function updateBird ()
+function updateBird () //put code that changes anything about the bird here, but no calculating, just value assignment
 {
     $("#bird").css("margin-top", h);
 }
 
-
-$(document).click(function()
-{
-    v = -7;
-    start = true;
-});
-
-
-function gravity ()
+function gravity () // calculates height for bird, calls updateBird to update the values
 {
     if(v > 200)
     {
@@ -51,17 +43,22 @@ function gravity ()
     updateBird();
 }
 
-
-function idle ()
+function jump () //changes velocity to negative (upward movement), gravity() will update the bird
 {
-    if(start)
+    v = -7;
+}
+
+
+function idle () //function to wait for click to start the game
+{
+    if(start) //any values to change at first click (start of the game) put in here
     {
         clearInterval(wait);
         v = -7;
         g = .25;
         fall = setInterval(gravity, 10);
 
-    } else
+    } else //adds a small sway to the bird while it waits
     {
         if(v >= 1 || v <= -1)
         {
@@ -74,3 +71,9 @@ function idle ()
         updateBird();
     }
 }
+
+$(document).click(function() //the first click will start game and every click will cause bird to jump
+{
+    start = true;
+    jump();
+});
