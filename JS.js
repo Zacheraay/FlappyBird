@@ -3,7 +3,7 @@ $(document).ready(function ()
     createBird();
 });
 
-
+var repeating;
 var v = 1;
 var g = .02;
 var maxV = 200;
@@ -57,6 +57,7 @@ function idle () //function to wait for click to start the game
         v = -7;
         g = .25;
         fall = setInterval(gravity, 10);
+        repeating = setInterval(move, 1000);
 
     } else //adds a small sway to the bird while it waits
     {
@@ -70,6 +71,28 @@ function idle () //function to wait for click to start the game
 
         updateBird();
     }
+}
+
+function move() {
+  var randHeight = Math.ceil(Math.random() * 200);
+  var pipe = $("<img></img>")
+    .attr("id", "pipe")
+    .attr(
+      "src",
+      "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
+    )
+    .css("top", randHeight + 350);
+  $(pipe).appendTo(document.body);
+  var pipe2 = $("<img></img>")
+    .attr("id", "pipe2")
+    .attr(
+      "src",
+      "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
+    )
+    .css("top", randHeight);
+  $(pipe2).appendTo(document.body);
+  $(pipe).animate({ left: "-700px" }, 4000, "linear");
+  $(pipe2).animate({ left: "-700px" }, 4000, "linear");
 }
 
 $(document).click(function() //the first click will start game and every click will cause bird to jump

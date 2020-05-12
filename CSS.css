@@ -17,3 +17,19 @@
     height: 50px;
     margin-top: 300px;
 }
+
+#pipe {
+  width: 300px;
+  height: 150px;
+  position: absolute;
+  left: 1000px;
+  top: 400px;
+}
+
+#pipe2 {
+  width: 300px;
+  height: 150px;
+  position: absolute;
+  left: 1000px;
+  transform: scaleY(-1);
+}
