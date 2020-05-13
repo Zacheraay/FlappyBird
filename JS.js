@@ -19,7 +19,7 @@ function idle ()
         v = -7;
         g = .25;
         fall = setInterval(checkBird, 10);
-        init = setInterval(createPipe, 2000);
+        init = setInterval(createPipe, 1500);
         move = setInterval(pipeMotion, 5);
     } else
     {
