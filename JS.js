@@ -1,65 +1,27 @@
+/***********************************************************************************************************************************
+document wait/start
+***********************************************************************************************************************************/
+
 $(document).ready(function ()
 {
     createBird();
 });
 
-var repeating;
-var v = 1;
-var g = .02;
-var maxV = 200;
-var h;
+
 var start = false;
 
 
-function createBird ()  //creates bird, sets h to css height, starts idle function after bird is initialized
+function idle ()
 {
-    var bird = $("<bDiv></bDiv>");
-    bird.attr('id', 'bird');
-    $("#gameWindow").append(bird);
-
-    h = parseInt(bird.css("margin-top"));
-
-    wait = setInterval(idle, 10);
-}
-
-
-function updateBird () //put code that changes anything about the bird here, but no calculating, just value assignment
-{
-    $("#bird").css("margin-top", h);
-}
-
-function gravity () // calculates height for bird, calls updateBird to update the values
-{
-    if(v > 200)
-    {
-        v = 200;
-    } else
-    {
-        v += g;
-    }
-
-    h += v;
-
-    updateBird();
-}
-
-function jump () //changes velocity to negative (upward movement), gravity() will update the bird
-{
-    v = -7;
-}
-
-
-function idle () //function to wait for click to start the game
-{
-    if(start) //any values to change at first click (start of the game) put in here
+    if(start)
     {
         clearInterval(wait);
         v = -7;
         g = .25;
-        fall = setInterval(gravity, 10);
-        repeating = setInterval(move, 1000);
-
-    } else //adds a small sway to the bird while it waits
+        fall = setInterval(checkBird, 10);
+        init = setInterval(createPipe, 2000);
+        move = setInterval(pipeMotion, 5);
+    } else
     {
         if(v >= 1 || v <= -1)
         {
@@ -73,30 +35,170 @@ function idle () //function to wait for click to start the game
     }
 }
 
-function move() {
-  var randHeight = Math.ceil(Math.random() * 200);
-  var pipe = $("<img></img>")
-    .attr("id", "pipe")
-    .attr(
-      "src",
-      "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
-    )
-    .css("top", randHeight + 350);
-  $(pipe).appendTo(document.body);
-  var pipe2 = $("<img></img>")
-    .attr("id", "pipe2")
-    .attr(
-      "src",
-      "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
-    )
-    .css("top", randHeight);
-  $(pipe2).appendTo(document.body);
-  $(pipe).animate({ left: "-700px" }, 4000, "linear");
-  $(pipe2).animate({ left: "-700px" }, 4000, "linear");
+/***********************************************************************************************************************************
+Bird
+***********************************************************************************************************************************/
+
+var maxV = 200;
+var h;
+var v = 1;
+var g = .02;
+
+
+function createBird ()
+{
+    var bird = $("<bDiv></bDiv>")
+        .attr("id", "bird");
+    $("#gameWindow").append(bird);
+
+    h = parseInt(bird.css("margin-top"));
+
+    wait = setInterval(idle, 10);
 }
+
+
+function updateBird ()
+{
+    $("#bird").css("margin-top", h);
+}
+
+
+function checkBird ()
+{
+    rebound();
+    gravity();
+    ground();
+    updateBird();
+}
+
+
+function jump ()
+{
+    v = -7;
+}
+
+
+function gravity ()
+{
+    if(v > 200)
+    {
+        v = 200;
+    } else
+    {
+        v += g;
+    }
+
+    h += v;
+}
+
+
+function rebound ()
+{
+    if(h < 0)
+    {
+        h = 0;
+        v = 0;
+    }
+}
+
+
+function ground ()
+{
+    if(h + parseInt($("#bird").css("height")) > 800)
+    {
+        clearInterval(fall);
+        clearInterval(init);
+        clearInterval(move);
+        h = 800 - parseInt($("#bird").css("height"));
+        updateBird();
+    }
+}
+
+/***********************************************************************************************************************************
+Pipes
+***********************************************************************************************************************************/
+
+var pipeCount = 0;
+var distance;
+var minPipe = 1;
+
+
+function createPipe ()
+{
+    pipeCount++;
+
+    var pVert = Math.random() * 400 + 200;
+    var pWidth = 100;
+    var gapWidth = 100;
+
+    var lowPipe = $("<pDiv></pDiv>")
+        .addClass("lPipe "+pipeCount);
+    var highPipe = $("<pDiv></pDiv>")
+        .addClass("hPipe "+pipeCount);
+    $("#gameWindow").append(lowPipe);
+    $("#gameWindow").append(highPipe);
+
+    lowPipe
+        .css("width", pWidth)
+        .css("margin-top", pVert + gapWidth)
+        .css("height", 800 - (pVert + gapWidth));
+    highPipe
+        .css("width", pWidth)
+        .css("margin-top", 0)
+        .css("height", pVert - gapWidth);
+    $("."+pipeCount)
+        .css("left", 600);
+
+}
+
+
+function pipeMotion ()
+{
+    for(var i = minPipe; i <= minPipe + $(".lPipe").length - 1; i++)
+    {
+        var xpos = parseInt($("."+i).css("left"));
+        distance = xpos - 1;
+        checkPipe(i);
+    }
+
+}
+
+
+function checkPipe (i)
+{
+    if(distance < parseInt($(".lPipe").css("width")) * -1)
+    {
+        deletePipe(i);
+    } else
+    {
+        updatePipe(i);
+    }
+}
+
+
+function updatePipe (i)
+{
+    $("."+i).css("left", distance);
+}
+
+
+function deletePipe (i)
+{
+    $("."+i).remove();
+    minPipe++;
+}
+
+/***********************************************************************************************************************************
+game checks
+***********************************************************************************************************************************/
+
+
+
+
 
 $(document).click(function() //the first click will start game and every click will cause bird to jump
 {
     start = true;
     jump();
 });
+// "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
