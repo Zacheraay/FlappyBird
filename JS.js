@@ -29,7 +29,7 @@ function idle ()
         }
 
         v += g;
-        h += v;
+        y += v;
 
         updateBird();
     }
@@ -40,7 +40,10 @@ Bird
 ***********************************************************************************************************************************/
 
 var maxV = 200;
-var h;
+var h = 50;
+var w = 60;
+var x = 200;
+var y;
 var v = 1;
 var g = .02;
 
@@ -48,10 +51,14 @@ var g = .02;
 function createBird ()
 {
     var bird = $("<bDiv></bDiv>")
-        .attr("id", "bird");
+    bird
+        .attr("id", "bird")
+        .css("width", w)
+        .css("height", h)
+        .css("left", x);
     $("#gameWindow").append(bird);
 
-    h = parseInt(bird.css("margin-top"));
+    y = parseInt(bird.css("margin-top"));
 
     wait = setInterval(idle, 10);
 }
@@ -59,7 +66,13 @@ function createBird ()
 
 function updateBird ()
 {
-    $("#bird").css("margin-top", h);
+    if(isCollided())
+    {
+        clearInterval(move);
+        clearInterval(init);
+    }
+
+    $("#bird").css("margin-top", y);
 }
 
 
@@ -88,15 +101,15 @@ function gravity ()
         v += g;
     }
 
-    h += v;
+    y += v;
 }
 
 
 function rebound ()
 {
-    if(h < 0)
+    if(y < 0)
     {
-        h = 0;
+        y = 0;
         v = 0;
     }
 }
@@ -104,12 +117,12 @@ function rebound ()
 
 function ground ()
 {
-    if(h + parseInt($("#bird").css("height")) > 800)
+    if(y + parseInt($("#bird").css("height")) > 800)
     {
         clearInterval(fall);
         clearInterval(init);
         clearInterval(move);
-        h = 800 - parseInt($("#bird").css("height"));
+        y = 800 - parseInt($("#bird").css("height"));
         updateBird();
     }
 }
@@ -154,7 +167,7 @@ function createPipe ()
 
 function pipeMotion ()
 {
-    for(var i = minPipe; i <= minPipe + $(".lPipe").length - 1; i++)
+    for(var i = minPipe; i <= pipeCount; i++)
     {
         var xpos = parseInt($("."+i).css("left"));
         distance = xpos - 1;
@@ -189,16 +202,56 @@ function deletePipe (i)
 }
 
 /***********************************************************************************************************************************
-game checks
+collision
 ***********************************************************************************************************************************/
 
+function isCollided ()
+{
+    var collided = false;
+
+    var bx1 = x;
+    var bx2 = x + w;
+    var by1 = y;
+    var by2 = y + h;
+
+    var px1, px2, py1, py2;
+
+    for(var i = minPipe; i <= pipeCount; i++)
+    {
+        px1 = parseInt($("."+i).css("left"));
+        px2 = parseInt($("."+i).css("left")) + parseInt($("."+i).css("width"));
+        py1 = parseInt($("."+i).css("margin-top")) - 200;
+        py2 = parseInt($("."+i).css("margin-top"));
+
+        if(bx1 < px2 && px1 < bx2)
+        {
+            if(by1 < py1 || by2 > py2)
+            {
+                collided = true;
+            }
+        }
+    }
+
+    return collided;
+}
 
 
+var stop = false;
 
 
 $(document).click(function() //the first click will start game and every click will cause bird to jump
 {
     start = true;
-    jump();
+
+
+    if(isCollided())
+    {
+        stop = true;
+    }
+
+    if(!stop)
+    {
+        jump();
+    }
 });
 // "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
