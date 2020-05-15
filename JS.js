@@ -16,6 +16,7 @@ function idle ()
     if(start)
     {
         clearInterval(wait);
+        initScore();
         v = -7;
         g = .25;
         fall = setInterval(checkBird, 10);
@@ -82,6 +83,7 @@ function checkBird ()
     gravity();
     ground();
     updateBird();
+    updateScore();
 }
 
 
@@ -134,6 +136,7 @@ Pipes
 var pipeCount = 0;
 var distance;
 var minPipe = 1;
+var pipesPassed = 0;
 
 
 function createPipe ()
@@ -192,6 +195,11 @@ function checkPipe (i)
 function updatePipe (i)
 {
     $("."+i).css("left", distance);
+
+    if(parseInt($("."+i).css("left")) == 200)
+    {
+        pipesPassed++;
+    }
 }
 
 
@@ -202,7 +210,7 @@ function deletePipe (i)
 }
 
 /***********************************************************************************************************************************
-collision
+Game Checks
 ***********************************************************************************************************************************/
 
 function isCollided ()
@@ -233,6 +241,22 @@ function isCollided ()
     }
 
     return collided;
+}
+
+
+function initScore ()
+{
+    var score = $("<score></score>");
+    score
+        .attr("id", "score");
+
+    $("#gameWindow").append(score);
+}
+
+
+function updateScore ()
+{
+    $("#score").html(pipesPassed);
 }
 
 
