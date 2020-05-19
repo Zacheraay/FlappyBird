@@ -4,11 +4,11 @@ document wait/start
 
 $(document).ready(function ()
 {
-    createBird();
+    setGame();
 });
 
 
-var start = false;
+var start;
 
 
 function idle ()
@@ -36,6 +36,24 @@ function idle ()
     }
 }
 
+
+function setGame ()
+{
+    $("#deathScreen").hide();
+    $("#gameWindow").empty();
+
+    start = false;
+    died = false;
+
+    pipesPassed = 0;
+    pipeCount = 0;
+    minPipe = 1;
+
+    g = .02;
+
+    createBird();
+}
+
 /***********************************************************************************************************************************
 Bird
 ***********************************************************************************************************************************/
@@ -45,8 +63,8 @@ var h = 50;
 var w = 60;
 var x = 200;
 var y;
-var v = 1;
-var g = .02;
+var v;
+var died;
 
 
 function createBird ()
@@ -59,7 +77,8 @@ function createBird ()
         .css("left", x);
     $("#gameWindow").append(bird);
 
-    y = parseInt(bird.css("margin-top"));
+    y = 300;
+    v = 1;
 
     wait = setInterval(idle, 10);
 }
@@ -67,12 +86,6 @@ function createBird ()
 
 function updateBird ()
 {
-    if(isCollided())
-    {
-        clearInterval(move);
-        clearInterval(init);
-    }
-
     $("#bird").css("margin-top", y);
 }
 
@@ -84,12 +97,16 @@ function checkBird ()
     ground();
     updateBird();
     updateScore();
+    isCollided();
 }
 
 
 function jump ()
 {
-    v = -7;
+    if(!died)
+    {
+        v = -7;
+    }
 }
 
 
@@ -121,22 +138,34 @@ function ground ()
 {
     if(y + parseInt($("#bird").css("height")) > 800)
     {
-        clearInterval(fall);
-        clearInterval(init);
-        clearInterval(move);
         y = 800 - parseInt($("#bird").css("height"));
         updateBird();
+        dead (true);
+        died = true;
     }
 }
+
+
+function dead (hasFallen)
+{
+    clearInterval(init);
+    clearInterval(move);
+    if(hasFallen)
+    {
+        clearInterval(fall);
+        $("#deathScreen").show();
+    }
+}
+
 
 /***********************************************************************************************************************************
 Pipes
 ***********************************************************************************************************************************/
 
-var pipeCount = 0;
+var pipeCount;
 var distance;
-var minPipe = 1;
-var pipesPassed = 0;
+var minPipe;
+var pipesPassed;
 
 
 function createPipe ()
@@ -215,8 +244,6 @@ Game Checks
 
 function isCollided ()
 {
-    var collided = false;
-
     var bx1 = x;
     var bx2 = x + w;
     var by1 = y;
@@ -235,12 +262,11 @@ function isCollided ()
         {
             if(by1 < py1 || by2 > py2)
             {
-                collided = true;
+                dead(false);
+                died = true;
             }
         }
     }
-
-    return collided;
 }
 
 
@@ -260,22 +286,10 @@ function updateScore ()
 }
 
 
-var stop = false;
-
-
 $(document).click(function() //the first click will start game and every click will cause bird to jump
 {
     start = true;
 
-
-    if(isCollided())
-    {
-        stop = true;
-    }
-
-    if(!stop)
-    {
-        jump();
-    }
+    jump();
 });
 // "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
