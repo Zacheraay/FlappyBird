@@ -5,10 +5,16 @@ document wait/start
 $(document).ready(function ()
 {
     setGame();
+    setInterval(F, 50);
 });
 
+function F ()
+{
+    console.log(hold);
+}
 
 var start;
+var hold = false;
 
 
 function idle ()
@@ -152,8 +158,10 @@ function dead (hasFallen)
     clearInterval(move);
     if(hasFallen)
     {
+        hold = true;
         clearInterval(fall);
         $("#deathScreen").show();
+        $("#gameScore").html($("#score").html());
     }
 }
 
@@ -270,6 +278,37 @@ function isCollided ()
 }
 
 
+
+$(document).mousedown(function()
+{
+    if(!hold)
+    {
+        start = true;
+        jump();
+    }
+});
+
+
+
+
+$(document).mouseup(function()
+{
+    if(restart)
+    {
+        hold = false;
+        restart = false;
+    }
+});
+
+
+
+/***********************************************************************************************************************************
+Score/postgame
+***********************************************************************************************************************************/
+
+var restart = false;
+
+
 function initScore ()
 {
     var score = $("<score></score>");
@@ -286,10 +325,24 @@ function updateScore ()
 }
 
 
-$(document).click(function() //the first click will start game and every click will cause bird to jump
+$("#restart").mouseover(function()
 {
-    start = true;
-
-    jump();
+    $("#restart")
+        .css("border", "3px solid white")
+        .css("color", "white");
 });
-// "https://www.pngkey.com/png/detail/181-1811759_flappy-bird-pipes-png-transparent-download-8-bit.png"
+
+
+$("#restart").mouseleave(function()
+{
+    $("#restart")
+        .css("border", "3px solid black")
+        .css("color", "black");
+});
+
+
+$("#restart").mousedown(function()
+{
+    setGame();
+    restart = true;
+});

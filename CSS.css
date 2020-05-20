@@ -21,11 +21,12 @@
 {
     position: absolute;
     user-select: none;
-    width: 50px;
+    width: 150px;
     height: 50px;
     left: 50%;
-    margin-left: -25px;
+    margin-left: -75px;
     font-size: 100px;
+    text-align: center;
 }
 
 
@@ -53,17 +54,36 @@
     left: 50%;
     margin-left: -200px;
     margin-top: 100px;
+    font-size: 50px;
+    text-align: center;
 }
 
 
 #gameScore
 {
     position: absolute;
-    border: 2px solid black;
-    width: 75px;
-    height: 75px;
+    width: 100px;
+    height: 100px;
     left: 50%;
-    margin-left: -37.5px;
-    margin-top: 75px;
-    font-size: 100px;
+    margin-left: -50px;
+    margin-top: 50px;
+    font-size: 150px;
+    text-align: center;
+}
+
+
+#restart
+{
+    border: 3px solid black;
+    background: red;
+    position: absolute;
+    width: 175px;
+    height: 38px;
+    left: 50%;
+    margin-left: -87.5px;
+    margin-top: 275px;
+    font-size: 35px;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
 }
