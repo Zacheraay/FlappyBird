@@ -5,13 +5,8 @@ document wait/start
 $(document).ready(function ()
 {
     setGame();
-    setInterval(F, 50);
 });
 
-function F ()
-{
-    console.log(hold);
-}
 
 var start;
 var hold = false;
