@@ -90,6 +90,8 @@
     user-select: none;
     cursor: pointer;
 }
+
+
 #cover1{
     position: absolute;
     left:0;
@@ -98,6 +100,8 @@
     background: white;
     z-index: 10;
 }
+
+
 #cover2{
     position: absolute;
     right:0;
