@@ -1,6 +1,7 @@
 #gameWindow
 {
-    background: lightblue;
+    background-image:url(Images/background.png);
+    background-position: bottom;
     position: absolute;
     left: 50%;
     width: 600px;
@@ -11,9 +12,8 @@
 
 #bird
 {
-    border: 2px solid black;
-    background: white;
     position: absolute;
+    background-image: url(Images/Bird.png);
 }
 
 
@@ -32,15 +32,18 @@
 
 .lPipe
 {
-    border: 2px solid  red;
     position: absolute;
+    background-image:url(Images/BottomPipe.png);
 }
 
 
 .hPipe
 {
-    border: 2px solid red;
     position: absolute;
+    background-image:url(Images/TopPipe.png);
+    background-position: bottom;
+
+
 }
 
 
@@ -103,4 +106,5 @@
     background: white;
     z-index: 10;
 }
+
 
